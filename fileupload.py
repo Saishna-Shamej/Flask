@@ -1,3 +1,5 @@
+from importlib.resources import files
+
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
@@ -11,9 +13,10 @@ def upload():
 @app.route('/success', methods=['POST'])
 def success():
     if request.method == 'POST':
-        f = request.files['file']
-        f.save(f.filename)
-        return render_template("success.html",name=f.filename)
+        f = request.files.getlist("file")
+        for file in f:
+            file.save(file.filename)
+        return render_template("success.html",name=file.filename)
 
 if __name__ =='__main__':
     app.run(debug = True)
